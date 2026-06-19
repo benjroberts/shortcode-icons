@@ -604,6 +604,19 @@ function setupEventListeners() {
   // Sticky header scroll class toggle with hysteresis to prevent layout feedback jitter
   const headerEl = document.querySelector('header');
   if (headerEl) {
+    const updateHeaderHeight = () => {
+      const wasScrolled = headerEl.classList.contains('scrolled');
+      if (wasScrolled) headerEl.classList.remove('scrolled');
+      
+      const height = headerEl.offsetHeight;
+      document.documentElement.style.setProperty('--header-height', `${height}px`);
+      
+      if (wasScrolled) headerEl.classList.add('scrolled');
+    };
+
+    updateHeaderHeight();
+    window.addEventListener('resize', updateHeaderHeight, { passive: true });
+
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const isScrolled = headerEl.classList.contains('scrolled');
@@ -614,7 +627,7 @@ function setupEventListeners() {
         headerEl.classList.remove('scrolled');
       }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // run on load
   }
 }

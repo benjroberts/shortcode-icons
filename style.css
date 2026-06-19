@@ -1268,7 +1268,7 @@ dialog[open]::backdrop {
 /* Mobile Optimization Overrides */
 @media (max-width: 640px) {
   .container {
-    padding: 8.5rem 1.25rem 4rem 1.25rem !important;
+    padding: calc(var(--header-height, 8.5rem) + 1.5rem) 1.25rem 4rem 1.25rem !important;
     max-width: 100vw;
     overflow-x: hidden;
   }

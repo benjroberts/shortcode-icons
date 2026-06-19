@@ -41,6 +41,7 @@ export const BrandStyles = {
   bankofamerica: { type: 'mono', bg: '#002C77', fg: '#FFFFFF', padding: 0.2 },
   stripe: { type: 'mono', bg: '#635BFF', fg: '#FFFFFF', padding: 0.25 },
   coinbase: { type: 'mono', bg: '#0052FF', fg: '#FFFFFF', padding: 0.22 },
+  wellsfargo: { type: 'mono', bg: '#D11242', fg: '#F4B224', padding: 0.2 },
   ebay: { type: 'mono', bg: '#FFFFFF', fg: '#0064D2', padding: 0.2 },
   nike: { type: 'mono', bg: '#000000', fg: '#FFFFFF', padding: 0.25 },
   verizon: { type: 'mono', bg: '#000000', fg: '#FFFFFF', padding: 0.22 },
@@ -142,8 +143,27 @@ function drawBrandLogo(ctx, brandId, size) {
   }
 }
 
-// Export object matching old BrandLogos interface
-export const BrandLogos = {};
+// Export object matching old BrandLogos interface with a Proxy fallback to prevent crashes
+const BrandLogosTarget = {};
 brands.forEach(brandId => {
-  BrandLogos[brandId] = (ctx, size) => drawBrandLogo(ctx, brandId, size);
+  BrandLogosTarget[brandId] = (ctx, size) => drawBrandLogo(ctx, brandId, size);
+});
+
+export const BrandLogos = new Proxy(BrandLogosTarget, {
+  get(target, prop) {
+    if (prop in target) {
+      return target[prop];
+    }
+    return (ctx, size) => {
+      console.warn(`BrandLogos: missing style config for '${String(prop)}'`);
+      // Safe fallback rendering inside the canvas
+      ctx.fillStyle = '#E5E7EB';
+      ctx.fillRect(0, 0, size, size);
+      ctx.fillStyle = '#4B5563';
+      ctx.font = `bold ${size * 0.4}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(prop).substring(0, 2).toUpperCase(), size / 2, size / 2);
+    };
+  }
 });
