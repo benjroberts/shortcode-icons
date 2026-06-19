@@ -1275,22 +1275,27 @@ dialog[open]::backdrop {
   }
 
   .header-inner {
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    padding: 1.25rem 1.25rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .logo-text {
+    display: none;
   }
 
   .nav-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    width: auto;
   }
 
   .nav-links a, .nav-links button {
-    font-size: 0.82rem;
-    padding: 0.45rem 0.9rem;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.7rem;
+    white-space: nowrap;
   }
 
   .hero {
