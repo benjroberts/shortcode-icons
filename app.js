@@ -1653,11 +1653,6 @@ function renderGrid() {
       downloadSingleVcard(item);
     });
 
-    clone.querySelector('.btn-download-png').addEventListener('click', (e) => {
-      e.stopPropagation();
-      downloadLogoPng(item);
-    });
-
     gridContainer.appendChild(clone);
   });
 }
