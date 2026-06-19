@@ -79,7 +79,6 @@
         <div class="logo-text">shortcode<strong>icons</strong>.com</div>
       </div>
       <div class="nav-links">
-        <button id="btn-show-guide">How to Import</button>
         <a href="https://buymeacoffee.com/shortcodeicons" target="_blank" class="btn-coffee-header">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-right: 2px;"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><path d="M6 1v3M10 1v3M14 1v3"/></svg>
           Support Me
@@ -169,6 +168,11 @@
       <!-- Cards rendered here via JavaScript -->
     </section>
 
+    <!-- Load More Container -->
+    <div id="load-more-container" class="load-more-container">
+      <button id="btn-load-more" class="btn-secondary" style="padding: 0.75rem 2.5rem;">Show More Senders</button>
+    </div>
+
     <!-- FAQ Section -->
     <section class="faq-section" id="faq">
       <h2 class="faq-title">Frequently Asked Questions</h2>
@@ -180,7 +184,7 @@
             How do I subscribe to contact updates?
           </h3>
           <p class="faq-answer">
-            Click the <strong>Subscribe to Contacts</strong> button at the top of the page. It will open a guide showing how to set up a live subscription. For Apple devices (iOS/macOS), you can download a one-click Configuration Profile. For Android and other systems, you can add a manual CardDAV account in your settings.
+            Click the <strong>Subscribe to Contacts</strong> button at the top of the page. It will open a guide showing how to set up a live subscription. For Apple devices (iOS/macOS), you can download a one-click Configuration Profile. For Android and other systems, you can add a manual CardDAV account in your settings. <strong>Once subscribed, any new numbers or logo updates we add will automatically sync to your phone in the background, with no action needed on your end.</strong>
           </p>
         </div>
 
@@ -248,7 +252,7 @@
       <div class="modal-option-card recommended">
         <div class="option-badge">Recommended</div>
         <h3>Option 1: Live Sync (CardDAV)</h3>
-        <p class="option-desc">Keep your contacts updated automatically! Whenever brand logos or shortcodes are updated on our server, your phone will sync them without redownloading.</p>
+        <p class="option-desc">Keep your contacts updated automatically! Once you subscribe, any new shortcodes or brand logo updates we add will automatically sync directly to your phone in the background, with absolutely nothing to do on your end.</p>
         
         <div class="sync-instructions" id="sync-instructions-ios">
           <h4>For iPhone, iPad & Mac:</h4>

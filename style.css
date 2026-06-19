@@ -1739,5 +1739,13 @@ dialog[open]::backdrop {
   line-height: 1.5;
 }
 
+/* Load More Senders Layout */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
 
 

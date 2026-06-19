@@ -1162,6 +1162,7 @@ let selectedCategory = 'all';
 let searchQuery = '';
 let isMultiSelectMode = false;
 let selectedBrandIds = new Set();
+let displayLimit = 24;
 
 // DOM Elements
 const gridContainer = document.getElementById('directory-grid');
@@ -1297,6 +1298,7 @@ function setupEventListeners() {
   // Search
   searchBar.addEventListener('input', (e) => {
     searchQuery = e.target.value.toLowerCase().trim();
+    displayLimit = 24; // Reset display limit on new search
     renderGrid();
   });
 
@@ -1306,6 +1308,7 @@ function setupEventListeners() {
       document.querySelector('.filter-chip.active').classList.remove('active');
       e.target.classList.add('active');
       selectedCategory = e.target.dataset.category;
+      displayLimit = 24; // Reset display limit on category change
       renderGrid();
       if (typeof gtag === 'function') {
         gtag('event', 'filter_category', {
@@ -1352,12 +1355,23 @@ function setupEventListeners() {
   }
 
   // Instruction Dialog Modal Events
-  btnShowGuide.addEventListener('click', () => {
-    instructionsDialog.showModal();
-    if (typeof gtag === 'function') {
-      gtag('event', 'view_guide');
-    }
-  });
+  if (btnShowGuide) {
+    btnShowGuide.addEventListener('click', () => {
+      instructionsDialog.showModal();
+      if (typeof gtag === 'function') {
+        gtag('event', 'view_guide');
+      }
+    });
+  }
+
+  // Load More Button Event
+  const btnLoadMore = document.getElementById('btn-load-more');
+  if (btnLoadMore) {
+    btnLoadMore.addEventListener('click', () => {
+      displayLimit += 24;
+      renderGrid();
+    });
+  }
 
   btnCloseDialog.addEventListener('click', () => {
     instructionsDialog.close();
@@ -1605,7 +1619,18 @@ function renderGrid() {
     return matchesCategory && matchesSearch;
   });
 
-  filteredData.forEach(item => {
+  // Toggle load-more button container visibility
+  const loadMoreContainer = document.getElementById('load-more-container');
+  if (loadMoreContainer) {
+    if (filteredData.length > displayLimit) {
+      loadMoreContainer.style.display = 'flex';
+    } else {
+      loadMoreContainer.style.display = 'none';
+    }
+  }
+
+  const itemsToRender = filteredData.slice(0, displayLimit);
+  itemsToRender.forEach(item => {
     const clone = template.content.cloneNode(true);
     const cardEl = clone.querySelector('.card');
     
