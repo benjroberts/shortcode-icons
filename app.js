@@ -1809,7 +1809,7 @@ function downloadCombinedVcard(brands, filename) {
   try {
     let combinedVcf = '';
     brands.forEach(brand => {
-      combinedVcf += buildContactVcardString(brand) + '\r\n';
+      combinedVcf += buildContactVcardString(brand);
     });
     downloadFile(combinedVcf, filename, 'text/vcard;charset=utf-8');
     if (typeof gtag === 'function') {
