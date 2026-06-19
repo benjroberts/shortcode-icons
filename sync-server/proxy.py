@@ -835,6 +835,47 @@ def get_admin_panel_html():
       document.getElementById('contact-dialog').close();
     }
     
+    async function ensureCollectionExists() {
+      const authHeader = 'Basic ' + btoa('admin:' + adminPassword);
+      const response = await fetch(collectionUrl, {
+        method: 'PROPFIND',
+        headers: {
+          'Authorization': authHeader,
+          'Depth': '0'
+        }
+      });
+      
+      if (response.status === 404) {
+        console.log("Collection doesn't exist. Creating collection...");
+        const mkcolXml = `<?xml version="1.0" encoding="utf-8" ?>
+<D:mkcol xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav">
+  <D:set>
+    <D:prop>
+      <D:resourcetype>
+        <D:collection />
+        <C:addressbook />
+      </D:resourcetype>
+      <D:displayname>Short Code Icons</D:displayname>
+    </D:prop>
+  </D:set>
+</D:mkcol>`;
+
+        const createRes = await fetch(collectionUrl, {
+          method: 'MKCOL',
+          headers: {
+            'Authorization': authHeader,
+            'Content-Type': 'text/xml'
+          },
+          body: mkcolXml
+        });
+        
+        if (!createRes.ok) {
+          throw new Error("Failed to create collection");
+        }
+        console.log("Collection successfully created!");
+      }
+    }
+    
     async function saveContact() {
       const name = document.getElementById('brand-name').value.trim();
       const fullName = document.getElementById('brand-fullname').value.trim();
@@ -879,6 +920,7 @@ def get_admin_panel_html():
       const url = `${collectionUrl}${filename}`;
       
       try {
+        await ensureCollectionExists();
         const response = await fetch(url, {
           method: 'PUT',
           headers: {
@@ -984,6 +1026,9 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         
     def do_PUT(self):
         self.proxy_request("PUT")
+        
+    def do_MKCOL(self):
+        self.proxy_request("MKCOL")
         
     def do_DELETE(self):
         self.proxy_request("DELETE")
