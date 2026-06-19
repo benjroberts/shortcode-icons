@@ -1,9 +1,9 @@
 FROM ghcr.io/kozea/radicale:stable
 
-# Copy custom configurations and users
 COPY config /etc/radicale/config
 COPY rights /etc/radicale/rights
 COPY users /etc/radicale/users
+COPY proxy.py /proxy.py
 
-# Override the default command to listen on port 8080 (required for DigitalOcean health check)
-CMD ["--hosts", "0.0.0.0:8080,[::]:8080"]
+# Run the proxy wrapper which starts Radicale on port 8081 and serves API + proxy on port 8080
+CMD ["python3", "/proxy.py"]

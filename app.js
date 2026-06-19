@@ -1,4 +1,4 @@
-import { BrandLogos, LogosLoaded } from './logos.js';
+import { BrandLogos, LogosLoaded, BrandStyles } from './logos.js';
 
 // NOTE: Always keep this list sorted alphabetically by brand id.
 const DirectoryData = [
@@ -1172,7 +1172,6 @@ const floatingBatchBar = document.getElementById('floating-batch-bar');
 const batchSelectedCount = document.getElementById('batch-selected-count');
 const btnBatchDownload = document.getElementById('btn-batch-download');
 const btnBatchClear = document.getElementById('btn-batch-clear');
-const btnHeroSync = document.getElementById('btn-hero-sync');
 const btnSubscribe = document.getElementById('btn-subscribe');
 
 // Modals
@@ -1186,8 +1185,80 @@ const phoneChatList = document.getElementById('phone-chat-list');
 const toggleBoring = document.getElementById('toggle-boring');
 const toggleBranded = document.getElementById('toggle-branded');
 
+// API Loader & Logo Renderers for CardDAV Source of Truth
+async function loadLiveContacts() {
+  try {
+    const response = await fetch('https://sync.shortcodeicons.com/api/contacts');
+    if (!response.ok) {
+      throw new Error(`API returned HTTP ${response.status}`);
+    }
+    const data = await response.json();
+    if (Array.isArray(data) && data.length > 0) {
+      console.log(`Successfully fetched ${data.length} contacts from CardDAV API.`);
+      
+      // Override local DirectoryData with the live server entries
+      DirectoryData.length = 0;
+      DirectoryData.push(...data);
+    }
+  } catch (err) {
+    console.warn("Failed to load contacts from CardDAV server API, falling back to local list:", err);
+  }
+}
+
+function drawContactLogo(canvas, brand) {
+  const ctx = canvas.getContext('2d');
+  const size = canvas.width;
+  
+  if (brand.photoBase64) {
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(img, 0, 0, size, size);
+    };
+    img.onerror = () => {
+      drawFallbackLogo(ctx, brand.name || brand.fullName, size);
+    };
+    img.src = 'data:image/jpeg;base64,' + brand.photoBase64;
+  } else {
+    // Resolve matching local brand key in BrandStyles
+    const matchedKey = resolveLocalBrandKey(brand.id, brand.name || brand.fullName);
+    if (matchedKey && BrandLogos[matchedKey]) {
+      BrandLogos[matchedKey](ctx, size);
+    } else {
+      drawFallbackLogo(ctx, brand.name || brand.fullName, size);
+    }
+  }
+}
+
+function resolveLocalBrandKey(brandId, brandName) {
+  const cleanId = (brandId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const cleanName = (brandName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  
+  if (BrandStyles[cleanId]) return cleanId;
+  if (BrandStyles[cleanName]) return cleanName;
+  
+  const keys = Object.keys(BrandStyles);
+  for (const key of keys) {
+    if (cleanId.startsWith(key) || key.startsWith(cleanId) || cleanName.startsWith(key) || key.startsWith(cleanName)) {
+      return key;
+    }
+  }
+  return null;
+}
+
+function drawFallbackLogo(ctx, name, size) {
+  ctx.fillStyle = '#F3F4F6';
+  ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = '#4B5563';
+  ctx.font = `bold ${Math.round(size * 0.35)}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const initials = (name || '??').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  ctx.fillText(initials, size / 2, size / 2);
+}
+
 // Initialize Website
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // iOS detection to hide batch/combined vCard download features due to WebKit/Safari multi-vCard preview limits
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   if (isIOS) {
@@ -1195,15 +1266,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bulkToggle) bulkToggle.style.display = 'none';
   }
 
-  // Show admin sync button if on localhost or ?admin=1 is in URL
-  const isAdmin = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || new URLSearchParams(window.location.search).has('admin');
-  if (isAdmin && btnHeroSync) {
-    btnHeroSync.style.display = 'inline-block';
-  }
-
   setupEventListeners();
   updateSearchPlaceholder();
   window.addEventListener('resize', updateSearchPlaceholder);
+
+  // Load contacts from CardDAV JSON API
+  await loadLiveContacts();
 
   // Wait for both custom fonts and logo SVGs to load before initial render
   const fontPromise = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
@@ -1267,52 +1335,7 @@ function setupEventListeners() {
   btnBatchClear.addEventListener('click', clearSelection);
   btnBatchDownload.addEventListener('click', downloadSelectedVcard);
 
-  // Admin Sync All to Live Server
-  if (btnHeroSync) {
-    btnHeroSync.addEventListener('click', async () => {
-      if (!confirm(`Are you sure you want to sync all ${DirectoryData.length} contacts to the live sync server? This will overwrite the existing list.`)) {
-        return;
-      }
 
-      const password = prompt("Enter Radicale admin password to verify sync:");
-      if (!password) {
-        return;
-      }
-
-      const originalText = btnHeroSync.textContent;
-      btnHeroSync.disabled = true;
-      btnHeroSync.textContent = "Syncing...";
-
-      try {
-        let combinedVcf = '';
-        DirectoryData.forEach(brand => {
-          combinedVcf += buildContactVcardString(brand);
-        });
-
-        // Push directly to Radicale CardDAV endpoint using basic credentials
-        const response = await fetch('https://sync.shortcodeicons.com/public/shortcode-icons-selected/', {
-          method: 'PUT',
-          headers: {
-            'Authorization': 'Basic ' + btoa('admin:' + password),
-            'Content-Type': 'text/vcard;charset=utf-8'
-          },
-          body: combinedVcf
-        });
-
-        if (!response.ok) {
-          throw new Error(`Server returned HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        showToast(`Successfully synced all ${DirectoryData.length} contacts to sync.shortcodeicons.com!`, "success");
-      } catch (err) {
-        console.error("Sync failed:", err);
-        showToast("Sync failed: " + err.message, "error");
-      } finally {
-        btnHeroSync.disabled = false;
-        btnHeroSync.textContent = originalText;
-      }
-    });
-  }
 
   // Hero Subscribe Button
   if (btnSubscribe) {
@@ -1597,8 +1620,7 @@ function renderGrid() {
 
     // Canvas drawing
     const canvas = clone.querySelector('.logo-canvas');
-    const ctx = canvas.getContext('2d');
-    BrandLogos[item.id](ctx, 128);
+    drawContactLogo(canvas, item);
 
     // Meta details
     clone.querySelector('.card-brand-name').textContent = item.name;
@@ -1633,7 +1655,7 @@ function renderGrid() {
 
     clone.querySelector('.btn-download-png').addEventListener('click', (e) => {
       e.stopPropagation();
-      downloadLogoPng(item.id, item.name);
+      downloadLogoPng(item);
     });
 
     gridContainer.appendChild(clone);
@@ -1715,8 +1737,9 @@ function renderPhoneMockup() {
 
       // Draw the logo on the mockup canvas immediately
       const canvas = avatarEl.querySelector('canvas');
-      const ctx = canvas.getContext('2d');
-      BrandLogos[chat.id](ctx, 64);
+      if (canvas) {
+        drawContactLogo(canvas, brandObj || { id: chat.id, name: chat.shortcode, fullName: chat.shortcode });
+      }
     }
 
     infoEl.appendChild(nameEl);
@@ -1772,8 +1795,7 @@ function updateFloatingBar() {
         canvas.height = 32;
         canvas.className = 'tiny-batch-logo';
         canvas.title = item.name;
-        const ctx = canvas.getContext('2d');
-        BrandLogos[brandId](ctx, 32);
+        drawContactLogo(canvas, item);
         trayContainer.appendChild(canvas);
       }
     });
@@ -1789,12 +1811,14 @@ function updateFloatingBar() {
 // vCard Generation Engine
 
 // Helper to draw the logo to an offscreen canvas and return raw base64 JPEG data
-function getBase64JpegLogo(brandId) {
+function getBase64JpegLogo(brand) {
+  if (brand.photoBase64) {
+    return brand.photoBase64;
+  }
   const canvas = document.createElement('canvas');
   canvas.width = 192;
   canvas.height = 192;
-  const ctx = canvas.getContext('2d');
-  BrandLogos[brandId](ctx, 192);
+  drawContactLogo(canvas, brand);
   const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
   return dataUrl.split(',')[1];
 }
@@ -1807,7 +1831,7 @@ function buildVcardPhotoLine(base64) {
 // Compile a single brand into its vCard block
 function buildContactVcardString(brand) {
   try {
-    const base64Photo = getBase64JpegLogo(brand.id);
+    const base64Photo = getBase64JpegLogo(brand);
     const photoLine = buildVcardPhotoLine(base64Photo);
 
     let vcf = `BEGIN:VCARD\r\n`;
@@ -1904,24 +1928,23 @@ function downloadFile(content, filename, contentType) {
 }
 
 // Draw and download high-res logo as PNG
-function downloadLogoPng(brandId, brandName) {
+function downloadLogoPng(brand) {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 512;
-  const ctx = canvas.getContext('2d');
-  BrandLogos[brandId](ctx, 512);
+  drawContactLogo(canvas, brand);
 
   const url = canvas.toDataURL('image/png');
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${brandId}-logo.png`;
+  a.download = `${brand.id}-logo.png`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   if (typeof gtag === 'function') {
     gtag('event', 'download_logo_png', {
-      'brand_id': brandId,
-      'brand_name': brandName
+      'brand_id': brand.id,
+      'brand_name': brand.name
     });
   }
 }
@@ -1975,3 +1998,8 @@ function showToast(message, type = 'success') {
     });
   }, 4000);
 }
+
+// Expose variables globally for Puppeteer automation
+window.LogosLoaded = LogosLoaded;
+window.DirectoryData = DirectoryData;
+window.buildContactVcardString = buildContactVcardString;
