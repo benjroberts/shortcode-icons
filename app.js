@@ -1726,18 +1726,9 @@ function getBase64JpegLogo(brandId) {
   return dataUrl.split(',')[1];
 }
 
-// Helper to return the base64 photo line with RFC-compliant 75-character folding
+// Helper to return the base64 photo line (single continuous line for iOS compatibility)
 function buildVcardPhotoLine(base64) {
-  const header = 'PHOTO;ENCODING=b;TYPE=JPEG:';
-  const fullLine = header + base64;
-  const lines = [];
-  lines.push(fullLine.substring(0, 75));
-  let i = 75;
-  while (i < fullLine.length) {
-    lines.push(' ' + fullLine.substring(i, i + 74));
-    i += 74;
-  }
-  return lines.join('\r\n');
+  return 'PHOTO;ENCODING=b;TYPE=JPEG:' + base64;
 }
 
 // Compile a single brand into its vCard block
