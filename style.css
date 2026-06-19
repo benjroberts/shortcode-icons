@@ -385,6 +385,10 @@ header.scrolled .header-inner {
   font-size: 0.95rem;
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(34, 77, 48, 0.2);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: var(--transition-smooth);
 }
 
