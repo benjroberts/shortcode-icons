@@ -1401,9 +1401,14 @@ dialog[open]::backdrop {
     width: 100% !important;
     transform: translateY(100%) !important;
     border-radius: 24px 24px 0 0 !important;
-    padding: 1.5rem 1.5rem 2rem 1.5rem !important;
-    flex-direction: column !important;
-    gap: 1rem !important;
+    padding: 0.85rem 1rem calc(0.85rem + env(safe-area-inset-bottom, 0px)) 1rem !important;
+    display: grid !important;
+    grid-template-areas: 
+      "count logos"
+      "buttons buttons" !important;
+    grid-template-columns: auto 1fr !important;
+    gap: 0.65rem !important;
+    align-items: center !important;
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1) !important;
     border-left: none !important;
     border-right: none !important;
@@ -1414,16 +1419,31 @@ dialog[open]::backdrop {
     transform: translateY(0) !important;
   }
 
+  .floating-count {
+    grid-area: count !important;
+    font-size: 0.9rem !important;
+  }
+
+  .batch-selected-logos {
+    grid-area: logos !important;
+    border-right: none !important;
+    padding-right: 0 !important;
+    max-width: 100% !important;
+    justify-self: start !important;
+    margin-left: 0.25rem !important;
+  }
+
   .floating-buttons {
-    width: 100%;
-    display: flex;
-    gap: 0.75rem;
+    grid-area: buttons !important;
+    width: 100% !important;
+    display: flex !important;
+    gap: 0.5rem !important;
   }
 
   .floating-buttons button {
-    flex: 1;
+    flex: 1 !important;
     font-size: 0.85rem !important;
-    padding: 0.75rem 1rem !important;
+    padding: 0.65rem 0.75rem !important;
   }
   
   .directory-grid {

@@ -1726,28 +1726,9 @@ function getBase64JpegLogo(brandId) {
   return dataUrl.split(',')[1];
 }
 
-// Helper to fold lines longer than 75 characters (RFC 2426 compliance)
+// Helper to return the base64 photo line (single continuous line for iOS compatibility)
 function buildVcardPhotoLine(base64) {
-  const header = 'PHOTO;TYPE=JPEG;ENCODING=b:';
-  const line = header + base64;
-  const maxLength = 75;
-  
-  if (line.length <= maxLength) {
-    return line;
-  }
-
-  let result = '';
-  // First line takes the header and the beginning of the base64 string
-  result += line.substring(0, maxLength) + '\r\n';
-
-  // Subsequent lines must start with a single white space character
-  let i = maxLength;
-  while (i < line.length) {
-    result += ' ' + line.substring(i, i + 74) + '\r\n';
-    i += 74;
-  }
-  
-  return result.trimEnd();
+  return 'PHOTO;ENCODING=b;TYPE=JPEG:' + base64;
 }
 
 // Compile a single brand into its vCard block
@@ -1819,7 +1800,7 @@ function downloadCombinedVcard(brands, filename) {
   try {
     let combinedVcf = '';
     brands.forEach(brand => {
-      combinedVcf += buildContactVcardString(brand);
+      combinedVcf += buildContactVcardString(brand) + '\r\n';
     });
     downloadFile(combinedVcf, filename, 'text/vcard;charset=utf-8');
     if (typeof gtag === 'function') {
