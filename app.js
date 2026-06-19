@@ -1280,6 +1280,11 @@ function setupEventListeners() {
         return;
       }
 
+      const password = prompt("Enter Radicale admin password to verify sync:");
+      if (!password) {
+        return;
+      }
+
       const originalText = btnBatchSync.textContent;
       btnBatchSync.disabled = true;
       btnBatchSync.textContent = "Syncing...";
@@ -1290,11 +1295,11 @@ function setupEventListeners() {
           combinedVcf += buildContactVcardString(brand);
         });
 
-        // Push directly to Radicale CardDAV endpoint using basic credentials (admin:admin123)
+        // Push directly to Radicale CardDAV endpoint using basic credentials
         const response = await fetch('https://sync.shortcodeicons.com/public/shortcode-icons-selected/', {
           method: 'PUT',
           headers: {
-            'Authorization': 'Basic ' + btoa('admin:admin123'),
+            'Authorization': 'Basic ' + btoa('admin:' + password),
             'Content-Type': 'text/vcard;charset=utf-8'
           },
           body: combinedVcf
