@@ -250,6 +250,126 @@ const DirectoryData = [
     category: "food",
     shortcodes: ["59381"],
     sms: "Lyft: Ride code 1234. Your driver is 2 mins away."
+  },
+  {
+    id: "discord",
+    name: "Discord",
+    fullName: "Discord Security",
+    category: "tech",
+    shortcodes: ["24365"],
+    sms: "Your Discord security code is: 123456. It expires in 5 minutes."
+  },
+  {
+    id: "twitch",
+    name: "Twitch",
+    fullName: "Twitch Alerts",
+    category: "tech",
+    shortcodes: ["84119"],
+    sms: "Twitch: Your verification code is 987654."
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    fullName: "GitHub Security",
+    category: "tech",
+    shortcodes: ["44842"],
+    sms: "[GitHub] Use 123456 as two-factor authentication code for your GitHub account."
+  },
+  {
+    id: "steam",
+    name: "Steam",
+    fullName: "Steam Guard",
+    category: "tech",
+    shortcodes: ["78326"],
+    sms: "Steam Guard: Your security code is ABCDE."
+  },
+  {
+    id: "americanexpress",
+    name: "American Express",
+    fullName: "Amex Alerts",
+    category: "finance",
+    shortcodes: ["26397"],
+    sms: "Amex: Security code 12345 for online purchase transaction."
+  },
+  {
+    id: "bankofamerica",
+    name: "Bank of America",
+    fullName: "BofA Alerts",
+    category: "finance",
+    shortcodes: ["73981"],
+    sms: "BofA: Alert - Large transaction of $250.00 at Apple Store."
+  },
+  {
+    id: "capitalone",
+    name: "Capital One",
+    fullName: "Capital One Alerts",
+    category: "finance",
+    shortcodes: ["22789"],
+    sms: "Capital One: Large purchase alert at Best Buy."
+  },
+  {
+    id: "wellsfargo",
+    name: "Wells Fargo",
+    fullName: "Wells Fargo Security",
+    category: "finance",
+    shortcodes: ["93557"],
+    sms: "Wells Fargo: Your temporary access code is 123456. Expires in 10 mins."
+  },
+  {
+    id: "stripe",
+    name: "Stripe",
+    fullName: "Stripe Verify",
+    category: "finance",
+    shortcodes: ["78747"],
+    sms: "Stripe: Your login verification code is 123-456."
+  },
+  {
+    id: "coinbase",
+    name: "Coinbase",
+    fullName: "Coinbase Security",
+    category: "finance",
+    shortcodes: ["26462"],
+    sms: "Coinbase: Your 2-step verification code is 123456."
+  },
+  {
+    id: "ebay",
+    name: "eBay",
+    fullName: "eBay Security",
+    category: "retail",
+    shortcodes: ["70726"],
+    sms: "eBay: Your security code is 987654. Do not share."
+  },
+  {
+    id: "nike",
+    name: "Nike",
+    fullName: "Nike Orders",
+    category: "retail",
+    shortcodes: ["64537"],
+    sms: "Nike: Your order #98765 has been shipped. Track your package."
+  },
+  {
+    id: "netflix",
+    name: "Netflix",
+    fullName: "Netflix Updates",
+    category: "services",
+    shortcodes: ["63835"],
+    sms: "Netflix: Your verification code is 123456. Don't share."
+  },
+  {
+    id: "verizon",
+    name: "Verizon",
+    fullName: "Verizon Security",
+    category: "services",
+    shortcodes: ["87902"],
+    sms: "Verizon: Your account security pin code is 123456."
+  },
+  {
+    id: "tmobile",
+    name: "T-Mobile",
+    fullName: "T-Mobile Alerts",
+    category: "services",
+    shortcodes: ["86645"],
+    sms: "T-Mobile: Your temporary security pin is 987654."
   }
 ];
 
@@ -284,6 +404,8 @@ const toggleBranded = document.getElementById('toggle-branded');
 // Initialize Website
 document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
+  updateSearchPlaceholder();
+  window.addEventListener('resize', updateSearchPlaceholder);
 
   // Wait for both custom fonts and logo SVGs to load before initial render
   const fontPromise = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
@@ -293,6 +415,16 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPhoneMockup();
   });
 });
+
+function updateSearchPlaceholder() {
+  if (searchBar) {
+    if (window.innerWidth < 640) {
+      searchBar.placeholder = "Search brand or shortcode...";
+    } else {
+      searchBar.placeholder = "Search by brand name or shortcode (e.g. Google, 22000)...";
+    }
+  }
+}
 
 // Event Listeners
 function setupEventListeners() {

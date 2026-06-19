@@ -18,11 +18,11 @@ export const BrandStyles = {
   kohls: { type: 'color', bg: '#1C1C1C', padding: 0 },
   amazon: { type: 'mono', bg: '#131921', fg: '#FF9900', padding: 0.22 },
   bestbuy: { type: 'color', bg: '#0046BE', padding: 0.15 },
-  costco: { type: 'color', bg: '#E31837', padding: 0 },
+  costco: { type: 'color', bg: '#FFFFFF', padding: 0.18 },
   ups: { type: 'mono', bg: '#351C15', fg: '#FFB500', padding: 0.18 },
   fedex: { type: 'mono', bg: '#4D148C', fg: '#FFFFFF', padding: 0.2 },
   usps: { type: 'mono', bg: '#002561', fg: '#FFFFFF', padding: 0.18 },
-  walgreens: { type: 'color', bg: '#E31837', padding: 0 },
+  walgreens: { type: 'color', bg: '#FFFFFF', padding: 0.15 },
   cvs: { type: 'color', bg: '#CC0000', padding: 0 },
   budget: { type: 'color', bg: '#EE3124', padding: 0 },
   slateauto: { type: 'color', bg: '#3A4D5C', padding: 0 },
@@ -31,7 +31,21 @@ export const BrandStyles = {
   doordash: { type: 'mono', bg: '#FF3008', fg: '#FFFFFF', padding: 0.22 },
   dominos: { type: 'color', bg: '#006491', padding: 0.15 },
   uber: { type: 'mono', bg: '#000000', fg: '#FFFFFF', padding: 0.25 },
-  lyft: { type: 'mono', bg: '#FF00BF', fg: '#FFFFFF', padding: 0.25 }
+  lyft: { type: 'mono', bg: '#FF00BF', fg: '#FFFFFF', padding: 0.25 },
+  capitalone: { type: 'color', bg: '#FFFFFF', padding: 0.18 },
+  discord: { type: 'mono', bg: '#5865F2', fg: '#FFFFFF', padding: 0.2 },
+  twitch: { type: 'mono', bg: '#9146FF', fg: '#FFFFFF', padding: 0.2 },
+  github: { type: 'mono', bg: '#181717', fg: '#FFFFFF', padding: 0.2 },
+  steam: { type: 'mono', bg: '#171A21', fg: '#FFFFFF', padding: 0.2 },
+  americanexpress: { type: 'mono', bg: '#0070CD', fg: '#FFFFFF', padding: 0.15 },
+  bankofamerica: { type: 'mono', bg: '#002C77', fg: '#FFFFFF', padding: 0.2 },
+  stripe: { type: 'mono', bg: '#635BFF', fg: '#FFFFFF', padding: 0.25 },
+  coinbase: { type: 'mono', bg: '#0052FF', fg: '#FFFFFF', padding: 0.22 },
+  ebay: { type: 'mono', bg: '#FFFFFF', fg: '#0064D2', padding: 0.2 },
+  nike: { type: 'mono', bg: '#000000', fg: '#FFFFFF', padding: 0.25 },
+  verizon: { type: 'mono', bg: '#000000', fg: '#FFFFFF', padding: 0.22 },
+  tmobile: { type: 'mono', bg: '#E20074', fg: '#FFFFFF', padding: 0.2 },
+  netflix: { type: 'mono', bg: '#000000', fg: '#E50914', padding: 0.2 }
 };
 
 const LogoImages = {};

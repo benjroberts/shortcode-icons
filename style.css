@@ -141,6 +141,9 @@ header {
   border-radius: var(--radius-pill);
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(255, 255, 255, 0.5);
+  position: sticky;
+  top: 1.5rem;
+  z-index: 1000;
 }
 
 .logo-container {
@@ -1257,7 +1260,12 @@ dialog[open]::backdrop {
     flex-direction: column;
     gap: 1rem;
     align-items: center;
-    padding: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    position: sticky;
+    top: 0.5rem;
+    z-index: 1000;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .nav-links {
@@ -1340,6 +1348,24 @@ dialog[open]::backdrop {
   .directory-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+
+  .category-filters {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 0.5rem !important;
+    margin-left: -1.25rem !important;
+    margin-right: -1.25rem !important;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+    scrollbar-width: none !important;
+  }
+  .category-filters::-webkit-scrollbar {
+    display: none !important;
+  }
+  .filter-chip {
+    flex-shrink: 0 !important;
   }
 }
 
