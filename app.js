@@ -1340,11 +1340,8 @@ function setupEventListeners() {
   // Hero Subscribe Button
   if (btnSubscribe) {
     btnSubscribe.addEventListener('click', (e) => {
+      e.preventDefault(); // Always prevent default download action on the hero button click
       const isApple = /iPad|iPhone|iPod|Mac/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      if (!isApple) {
-        // Prevent downloading the .mobileconfig profile as it is useless on non-Apple devices
-        e.preventDefault();
-      }
       instructionsDialog.showModal();
       if (typeof gtag === 'function') {
         gtag('event', 'click_subscribe_hero', {
