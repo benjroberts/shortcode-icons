@@ -286,6 +286,15 @@ document.addEventListener('DOMContentLoaded', () => {
   renderGrid();
   renderPhoneMockup();
   setupEventListeners();
+
+  // Redraw when custom fonts load. This solves the canvas text-loading bug
+  // where text draws as invisible or uses fallbacks because web fonts load async.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      renderGrid();
+      renderPhoneMockup();
+    });
+  }
 });
 
 // Event Listeners
