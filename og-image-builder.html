@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OG Image Builder</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Custom styles to build a beautiful 1200x630 banner */
+    body {
+      background-color: var(--bg-main);
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+      position: relative;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      font-family: var(--font-body);
+    }
+
+    /* Floating background blobs, positioned statically for composition */
+    .og-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 1;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+    .blob-1 {
+      top: -20%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #E4ECE9 0%, rgba(228, 236, 233, 0) 70%);
+    }
+    .blob-2 {
+      bottom: -15%;
+      right: -10%;
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, #F9EAE1 0%, rgba(249, 234, 225, 0) 70%);
+    }
+    .blob-3 {
+      top: 30%;
+      left: 35%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #F6F0E5 0%, rgba(246, 240, 229, 0) 70%);
+    }
+
+    /* Header banner styling */
+    .og-header {
+      position: relative;
+      z-index: 10;
+      padding: 35px 50px 15px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-icon {
+      background: var(--primary);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 8px 20px rgba(34, 77, 48, 0.18);
+    }
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    .logo-text strong {
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .og-tagline {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Main Container: Before / After Side-by-Side */
+    .og-main {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      gap: 32px;
+      padding: 0 50px;
+      flex-grow: 1;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    /* Message UI Card */
+    .msg-card {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      height: 330px;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+
+    /* Header for each section */
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .section-title.before {
+      color: var(--accent);
+    }
+    .section-title.after {
+      color: var(--primary);
+    }
+
+    /* Message Row styling */
+    .msg-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 4px;
+    }
+    .msg-row:not(:last-child) {
+      border-bottom: 1px solid rgba(43, 34, 27, 0.04);
+      padding-bottom: 16px;
+    }
+
+    /* Avatar container */
+    .avatar-wrapper {
+      width: 54px;
+      height: 54px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .avatar-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    }
+    .avatar-circle canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .before .avatar-circle {
+      background: none;
+      box-shadow: none;
+    }
+
+    /* Message Content */
+    .msg-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0; /* Prevents overflow */
+    }
+    .msg-sender {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .before .msg-sender {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+    .msg-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 320px;
+    }
+
+    .msg-time {
+      font-size: 0.8rem;
+      color: var(--text-dark);
+      align-self: flex-start;
+      margin-top: 4px;
+    }
+
+    /* Middle Connector / Arrow */
+    .og-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      gap: 10px;
+    }
+    .connector-arrow {
+      background: var(--primary);
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(34, 77, 48, 0.25);
+    }
+    .connector-label {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    /* Footer styling */
+    .og-footer {
+      position: relative;
+      z-index: 10;
+      padding: 15px 50px 35px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-right {
+      font-weight: 500;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Blobs -->
+  <div class="og-blob blob-1"></div>
+  <div class="og-blob blob-2"></div>
+  <div class="og-blob blob-3"></div>
+
+  <!-- Header -->
+  <div class="og-header">
+    <div class="logo-container">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="9" r="2"/>
+          <path d="M8 14c0-2 2-3 4-3s4 1 4 3"/>
+        </svg>
+      </div>
+      <div class="logo-text">shortcode<strong>icons</strong>.com</div>
+    </div>
+    <div class="og-tagline">Give your automated texts a face-lift.</div>
+  </div>
+
+  <!-- Main section -->
+  <div class="og-main">
+    <!-- BEFORE CARD -->
+    <div class="msg-card before">
+      <div class="section-title before">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        Before: Cryptic Senders
+      </div>
+      
+      <!-- Google Message -->
+      <div class="msg-row">
+        <div class="avatar-wrapper">
+          <div class="avatar-circle">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+              <circle cx="50" cy="50" r="50" fill="#E2E2E7"/>
+              <circle cx="50" cy="38" r="16" fill="#FFFFFF"/>
+              <path d="M20 85C20 62 35 58 50 58C65 58 80 62 80 85V100H20V85Z" fill="#FFFFFF"/>
+            </svg>
+          </div>
+        </div>
+        <div class="msg-body">
+          <div class="msg-sender">22000</div>
+          <div class="msg-text">G-958203 is your Google verification code.</div>
+        </div>
+        <div class="msg-time">10:42 AM</div>
+      </div>
+
+      <!-- Amazon Message -->
+      <div class="msg-row">
+        <div class="avatar-wrapper">
+          <div class="avatar-circle">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+              <circle cx="50" cy="50" r="50" fill="#E2E2E7"/>
+              <circle cx="50" cy="38" r="16" fill="#FFFFFF"/>
+              <path d="M20 85C20 62 35 58 50 58C65 58 80 62 80 85V100H20V85Z" fill="#FFFFFF"/>
+            </svg>
+          </div>
+        </div>
+        <div class="msg-body">
+          <div class="msg-sender">26297</div>
+          <div class="msg-text">Amazon: Your delivery is arriving today!</div>
+        </div>
+        <div class="msg-time">Yesterday</div>
+      </div>
+
+      <!-- PayPal Message -->
+      <div class="msg-row">
+        <div class="avatar-wrapper">
+          <div class="avatar-circle">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+              <circle cx="50" cy="50" r="50" fill="#E2E2E7"/>
+              <circle cx="50" cy="38" r="16" fill="#FFFFFF"/>
+              <path d="M20 85C20 62 35 58 50 58C65 58 80 62 80 85V100H20V85Z" fill="#FFFFFF"/>
+            </svg>
+          </div>
+        </div>
+        <div class="msg-body">
+          <div class="msg-sender">88714</div>
+          <div class="msg-text">PayPal security code: 492041. Don't share it.</div>
+        </div>
+        <div class="msg-time">Tuesday</div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="og-connector">
+      <div class="connector-arrow">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </div>
+      <div class="connector-label">This to This</div>
+    </div>
+
+    <!-- AFTER CARD -->
+    <div class="msg-card after">
+      <div class="section-title after">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        After: Clean Brand Icons
+      </div>
+
+      <!-- Google Message -->
+      <div class="msg-row">
+        <div class="avatar-wrapper">
+          <div class="avatar-circle">
+            <canvas id="canvas-google" width="128" height="128"></canvas>
+          </div>
+        </div>
+        <div class="msg-body">
+          <div class="msg-sender">Google</div>
+          <div class="msg-text">G-958203 is your Google verification code.</div>
+        </div>
+        <div class="msg-time">10:42 AM</div>
+      </div>
+
+      <!-- Amazon Message -->
+      <div class="msg-row">
+        <div class="avatar-wrapper">
+          <div class="avatar-circle">
+            <canvas id="canvas-amazon" width="128" height="128"></canvas>
+          </div>
+        </div>
+        <div class="msg-body">
+          <div class="msg-sender">Amazon</div>
+          <div class="msg-text">Amazon: Your delivery is arriving today!</div>
+        </div>
+        <div class="msg-time">Yesterday</div>
+      </div>
+
+      <!-- PayPal Message -->
+      <div class="msg-row">
+        <div class="avatar-wrapper">
+          <div class="avatar-circle">
+            <canvas id="canvas-paypal" width="128" height="128"></canvas>
+          </div>
+        </div>
+        <div class="msg-body">
+          <div class="msg-sender">PayPal</div>
+          <div class="msg-text">PayPal security code: 492041. Don't share it.</div>
+        </div>
+        <div class="msg-time">Tuesday</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="og-footer">
+    <div class="footer-left">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-right: 2px;"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Private, secure, and offline.
+    </div>
+    <div class="footer-right">
+      Works with iPhone & Android Contacts Sync
+    </div>
+  </div>
+
+  <script type="module">
+    import { BrandLogos, LogosLoaded } from './logos.js';
+
+    window.onload = async () => {
+      console.log("Mockup loaded, waiting for logos...");
+      try {
+        await LogosLoaded;
+        console.log("Logos loaded! Drawing onto canvases...");
+        
+        const drawCanvas = (id, brandKey) => {
+          const canvas = document.getElementById(id);
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            BrandLogos[brandKey](ctx, canvas.width);
+          }
+        };
+
+        drawCanvas('canvas-google', 'google');
+        drawCanvas('canvas-amazon', 'amazon');
+        drawCanvas('canvas-paypal', 'paypal');
+        
+        console.log("OG Image rendering complete, setting ready flag.");
+        window.OGImageReady = true;
+      } catch (err) {
+        console.error("Error loading or rendering logos:", err);
+      }
+    };
+  </script>
+</body>
+</html>
