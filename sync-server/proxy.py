@@ -339,7 +339,7 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         clean_path = path.split('?')[0].rstrip('/')
         if clean_path == "/.well-known/carddav" or clean_path.startswith("/principals"):
             self.send_response(301)
-            self.send_header("Location", "https://sync.shortcodeicons.com/public/")
+            self.send_header("Location", "https://sync.shortcodeicons.com/public/shortcode-icons-selected/")
             self.end_headers()
             return
 
