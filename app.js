@@ -1172,6 +1172,7 @@ const floatingBatchBar = document.getElementById('floating-batch-bar');
 const batchSelectedCount = document.getElementById('batch-selected-count');
 const btnBatchDownload = document.getElementById('btn-batch-download');
 const btnBatchClear = document.getElementById('btn-batch-clear');
+const btnBatchSync = document.getElementById('btn-batch-sync');
 const btnSubscribe = document.getElementById('btn-subscribe');
 
 // Modals
@@ -1192,6 +1193,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (isIOS) {
     const bulkToggle = document.querySelector('.bulk-actions-toggle');
     if (bulkToggle) bulkToggle.style.display = 'none';
+  }
+
+  // Show admin sync button if on localhost or ?admin=1 is in URL
+  const isAdmin = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || new URLSearchParams(window.location.search).has('admin');
+  if (isAdmin && btnBatchSync) {
+    btnBatchSync.style.display = 'inline-block';
   }
 
   setupEventListeners();
@@ -1259,6 +1266,55 @@ function setupEventListeners() {
   // Batch actions
   btnBatchClear.addEventListener('click', clearSelection);
   btnBatchDownload.addEventListener('click', downloadSelectedVcard);
+
+  // Batch Sync to Live Server
+  if (btnBatchSync) {
+    btnBatchSync.addEventListener('click', async () => {
+      const selectedBrands = DirectoryData.filter(brand => selectedBrandIds.has(brand.id));
+      if (selectedBrands.length === 0) {
+        showToast("No contacts selected. Please select at least one contact.", "error");
+        return;
+      }
+
+      if (!confirm(`Are you sure you want to sync these ${selectedBrands.length} contacts to the live sync server? This will overwrite the existing list.`)) {
+        return;
+      }
+
+      const originalText = btnBatchSync.textContent;
+      btnBatchSync.disabled = true;
+      btnBatchSync.textContent = "Syncing...";
+
+      try {
+        let combinedVcf = '';
+        selectedBrands.forEach(brand => {
+          combinedVcf += buildContactVcardString(brand);
+        });
+
+        // Push directly to Radicale CardDAV endpoint using basic credentials (admin:admin123)
+        const response = await fetch('https://sync.shortcodeicons.com/public/shortcode-icons-selected/', {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'Basic ' + btoa('admin:admin123'),
+            'Content-Type': 'text/vcard;charset=utf-8'
+          },
+          body: combinedVcf
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server returned HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        showToast(`Successfully synced ${selectedBrands.length} contacts to sync.shortcodeicons.com!`, "success");
+        clearSelection();
+      } catch (err) {
+        console.error("Sync failed:", err);
+        showToast("Sync failed: " + err.message, "error");
+      } finally {
+        btnBatchSync.disabled = false;
+        btnBatchSync.textContent = originalText;
+      }
+    });
+  }
 
   // Hero Subscribe Button
   if (btnSubscribe) {
