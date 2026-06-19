@@ -11,7 +11,7 @@ type = from_file
 file = /etc/radicale/rights
 
 [storage]
-type = filesystem
+type = multifilesystem
 filesystem_folder = /data
 
 [headers]
