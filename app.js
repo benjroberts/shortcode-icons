@@ -1,4 +1,4 @@
-import { BrandLogos } from './logos.js';
+import { BrandLogos, LogosLoaded } from './logos.js';
 
 // Dataset of 30 common automated SMS shortcodes
 const DirectoryData = [
@@ -283,18 +283,15 @@ const toggleBranded = document.getElementById('toggle-branded');
 
 // Initialize Website
 document.addEventListener('DOMContentLoaded', () => {
-  renderGrid();
-  renderPhoneMockup();
   setupEventListeners();
 
-  // Redraw when custom fonts load. This solves the canvas text-loading bug
-  // where text draws as invisible or uses fallbacks because web fonts load async.
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => {
-      renderGrid();
-      renderPhoneMockup();
-    });
-  }
+  // Wait for both custom fonts and logo SVGs to load before initial render
+  const fontPromise = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  
+  Promise.all([LogosLoaded, fontPromise]).then(() => {
+    renderGrid();
+    renderPhoneMockup();
+  });
 });
 
 // Event Listeners
@@ -672,20 +669,20 @@ function updateFloatingBar() {
 
 // vCard Generation Engine
 
-// Helper to draw the logo to an offscreen canvas and return raw base64 PNG data
-function getBase64PngLogo(brandId) {
+// Helper to draw the logo to an offscreen canvas and return raw base64 JPEG data
+function getBase64JpegLogo(brandId) {
   const canvas = document.createElement('canvas');
   canvas.width = 192;
   canvas.height = 192;
   const ctx = canvas.getContext('2d');
   BrandLogos[brandId](ctx, 192);
-  const dataUrl = canvas.toDataURL('image/png');
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
   return dataUrl.split(',')[1];
 }
 
 // Helper to fold lines longer than 75 characters (RFC 2426 compliance)
 function buildVcardPhotoLine(base64) {
-  const header = 'PHOTO;ENCODING=b;TYPE=PNG:';
+  const header = 'PHOTO;TYPE=JPEG;ENCODING=b:';
   const line = header + base64;
   const maxLength = 75;
   
@@ -709,22 +706,40 @@ function buildVcardPhotoLine(base64) {
 
 // Compile a single brand into its vCard block
 function buildContactVcardString(brand) {
-  const base64Photo = getBase64PngLogo(brand.id);
-  const photoLine = buildVcardPhotoLine(base64Photo);
+  try {
+    const base64Photo = getBase64JpegLogo(brand.id);
+    const photoLine = buildVcardPhotoLine(base64Photo);
 
-  let vcf = `BEGIN:VCARD\r\n`;
-  vcf += `VERSION:3.0\r\n`;
-  vcf += `FN:${brand.fullName}\r\n`;
-  vcf += `N:${brand.name};${brand.fullName.replace(brand.name, '').trim()};;;\r\n`;
-  
-  // Add all shortcodes as cellular numbers
-  brand.shortcodes.forEach(sc => {
-    vcf += `TEL;TYPE=CELL:${sc}\r\n`;
-  });
+    let vcf = `BEGIN:VCARD\r\n`;
+    vcf += `VERSION:3.0\r\n`;
+    vcf += `FN:${brand.fullName}\r\n`;
+    vcf += `N:;${brand.fullName};;;\r\n`;
+    vcf += `ORG:${brand.name}\r\n`;
+    
+    // Add all shortcodes as cellular numbers
+    brand.shortcodes.forEach(sc => {
+      vcf += `TEL;TYPE=CELL:${sc}\r\n`;
+    });
 
-  vcf += `${photoLine}\r\n`;
-  vcf += `END:VCARD\r\n`;
-  return vcf;
+    vcf += `${photoLine}\r\n`;
+    vcf += `END:VCARD\r\n`;
+    return vcf;
+  } catch (err) {
+    console.error(`Error compiling logo/vCard for brand ${brand.id}:`, err);
+    // Resilient fallback: compile contact without photo to prevent breaking the batch loop
+    let vcf = `BEGIN:VCARD\r\n`;
+    vcf += `VERSION:3.0\r\n`;
+    vcf += `FN:${brand.fullName}\r\n`;
+    vcf += `N:;${brand.fullName};;;\r\n`;
+    vcf += `ORG:${brand.name}\r\n`;
+    
+    brand.shortcodes.forEach(sc => {
+      vcf += `TEL;TYPE=CELL:${sc}\r\n`;
+    });
+    
+    vcf += `END:VCARD\r\n`;
+    return vcf;
+  }
 }
 
 // Compile and download a vCard for a single brand
@@ -748,11 +763,16 @@ function downloadSelectedVcard() {
 
 // Universal combined vCard download
 function downloadCombinedVcard(brands, filename) {
-  let combinedVcf = '';
-  brands.forEach(brand => {
-    combinedVcf += buildContactVcardString(brand);
-  });
-  downloadFile(combinedVcf, filename, 'text/vcard;charset=utf-8');
+  try {
+    let combinedVcf = '';
+    brands.forEach(brand => {
+      combinedVcf += buildContactVcardString(brand);
+    });
+    downloadFile(combinedVcf, filename, 'text/vcard;charset=utf-8');
+  } catch (err) {
+    console.error("Error compiling combined vCard:", err);
+    alert("Could not compile contacts: " + err.message);
+  }
 }
 
 // Trigger file download in browser
