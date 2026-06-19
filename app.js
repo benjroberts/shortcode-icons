@@ -1172,7 +1172,7 @@ const floatingBatchBar = document.getElementById('floating-batch-bar');
 const batchSelectedCount = document.getElementById('batch-selected-count');
 const btnBatchDownload = document.getElementById('btn-batch-download');
 const btnBatchClear = document.getElementById('btn-batch-clear');
-const btnBatchSync = document.getElementById('btn-batch-sync');
+const btnHeroSync = document.getElementById('btn-hero-sync');
 const btnSubscribe = document.getElementById('btn-subscribe');
 
 // Modals
@@ -1197,8 +1197,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Show admin sync button if on localhost or ?admin=1 is in URL
   const isAdmin = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || new URLSearchParams(window.location.search).has('admin');
-  if (isAdmin && btnBatchSync) {
-    btnBatchSync.style.display = 'inline-block';
+  if (isAdmin && btnHeroSync) {
+    btnHeroSync.style.display = 'inline-block';
   }
 
   setupEventListeners();
@@ -1267,16 +1267,10 @@ function setupEventListeners() {
   btnBatchClear.addEventListener('click', clearSelection);
   btnBatchDownload.addEventListener('click', downloadSelectedVcard);
 
-  // Batch Sync to Live Server
-  if (btnBatchSync) {
-    btnBatchSync.addEventListener('click', async () => {
-      const selectedBrands = DirectoryData.filter(brand => selectedBrandIds.has(brand.id));
-      if (selectedBrands.length === 0) {
-        showToast("No contacts selected. Please select at least one contact.", "error");
-        return;
-      }
-
-      if (!confirm(`Are you sure you want to sync these ${selectedBrands.length} contacts to the live sync server? This will overwrite the existing list.`)) {
+  // Admin Sync All to Live Server
+  if (btnHeroSync) {
+    btnHeroSync.addEventListener('click', async () => {
+      if (!confirm(`Are you sure you want to sync all ${DirectoryData.length} contacts to the live sync server? This will overwrite the existing list.`)) {
         return;
       }
 
@@ -1285,13 +1279,13 @@ function setupEventListeners() {
         return;
       }
 
-      const originalText = btnBatchSync.textContent;
-      btnBatchSync.disabled = true;
-      btnBatchSync.textContent = "Syncing...";
+      const originalText = btnHeroSync.textContent;
+      btnHeroSync.disabled = true;
+      btnHeroSync.textContent = "Syncing...";
 
       try {
         let combinedVcf = '';
-        selectedBrands.forEach(brand => {
+        DirectoryData.forEach(brand => {
           combinedVcf += buildContactVcardString(brand);
         });
 
@@ -1309,14 +1303,13 @@ function setupEventListeners() {
           throw new Error(`Server returned HTTP ${response.status}: ${response.statusText}`);
         }
 
-        showToast(`Successfully synced ${selectedBrands.length} contacts to sync.shortcodeicons.com!`, "success");
-        clearSelection();
+        showToast(`Successfully synced all ${DirectoryData.length} contacts to sync.shortcodeicons.com!`, "success");
       } catch (err) {
         console.error("Sync failed:", err);
         showToast("Sync failed: " + err.message, "error");
       } finally {
-        btnBatchSync.disabled = false;
-        btnBatchSync.textContent = originalText;
+        btnHeroSync.disabled = false;
+        btnHeroSync.textContent = originalText;
       }
     });
   }
