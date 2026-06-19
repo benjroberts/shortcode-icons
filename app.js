@@ -1373,6 +1373,15 @@ function setupEventListeners() {
     });
   }
 
+  // Show All Button Event
+  const btnShowAll = document.getElementById('btn-show-all');
+  if (btnShowAll) {
+    btnShowAll.addEventListener('click', () => {
+      displayLimit = Infinity;
+      renderGrid();
+    });
+  }
+
   btnCloseDialog.addEventListener('click', () => {
     instructionsDialog.close();
   });
