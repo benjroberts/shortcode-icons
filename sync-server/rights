@@ -8,4 +8,4 @@ permissions = RWrw
 [public-read-access]
 user = public
 collection = .*
-permissions = Rr
+permissions = RWrw
