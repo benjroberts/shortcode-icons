@@ -17,7 +17,7 @@ log_file.write("Starting proxy helper...\n")
 # Find radicale executable dynamically
 import shutil
 radicale_cmd = None
-for path in ["/usr/local/bin/radicale", "/usr/bin/radicale", "/usr/sbin/radicale"]:
+for path in ["/app/bin/radicale", "/usr/local/bin/radicale", "/usr/bin/radicale", "/usr/sbin/radicale"]:
     if os.path.exists(path):
         radicale_cmd = [path]
         break
@@ -26,6 +26,8 @@ if not radicale_cmd:
     which_path = shutil.which("radicale")
     if which_path:
         radicale_cmd = [which_path]
+    elif os.path.exists("/app/bin/python"):
+        radicale_cmd = ["/app/bin/python", "-m", "radicale"]
     else:
         radicale_cmd = ["python3", "-m", "radicale"]
 
