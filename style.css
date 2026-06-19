@@ -941,60 +941,7 @@ body.select-mode .card-select-wrapper {
   padding: 0;
 }
 
-/* Monetization: Google AdSense Container */
-.ad-container {
-  margin-top: 2rem;
-  background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: var(--radius-md);
-  padding: 1.15rem;
-  width: 100%;
-  max-width: 315px;
-  text-align: left;
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  position: relative;
-  min-height: 120px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
 
-.ad-fallback-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 1rem;
-}
-
-.ad-fallback-placeholder span {
-  font-family: var(--font-heading);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--primary);
-  background: var(--primary-light);
-  padding: 4px 12px;
-  border-radius: var(--radius-pill);
-  margin-bottom: 0.6rem;
-}
-
-.ad-fallback-placeholder p {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  line-height: 1.45;
-}
-
-/* Hide fallback placeholder when AdSense has loaded an ad */
-.ad-container ins[data-ad-status="filled"] ~ .ad-fallback-placeholder,
-.ad-container ins:not(:empty) ~ .ad-fallback-placeholder {
-  display: none;
-}
 
 /* Floating Actions Bar (Capsule design) */
 .floating-bar {
