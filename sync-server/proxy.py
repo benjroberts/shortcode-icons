@@ -12,12 +12,31 @@ PROXY_PORT = 8080
 
 # Start radicale process and capture output
 log_file = open("/radicale.log", "w", buffering=1)
-radicale_process = subprocess.Popen([
-    "python3",
-    "-m",
-    "radicale",
-    "--hosts", f"127.0.0.1:{RADICALE_PORT}"
-], stdout=log_file, stderr=log_file)
+log_file.write("Starting proxy helper...\n")
+
+# Find radicale executable dynamically
+import shutil
+radicale_cmd = None
+for path in ["/usr/local/bin/radicale", "/usr/bin/radicale", "/usr/sbin/radicale"]:
+    if os.path.exists(path):
+        radicale_cmd = [path]
+        break
+
+if not radicale_cmd:
+    which_path = shutil.which("radicale")
+    if which_path:
+        radicale_cmd = [which_path]
+    else:
+        radicale_cmd = ["python3", "-m", "radicale"]
+
+log_file.write(f"Resolved Radicale execution command: {radicale_cmd}\n")
+log_file.flush()
+
+radicale_process = subprocess.Popen(
+    radicale_cmd + ["--hosts", f"127.0.0.1:{RADICALE_PORT}"],
+    stdout=log_file,
+    stderr=log_file
+)
 
 def get_contacts_from_filesystem():
     possible_paths = [
