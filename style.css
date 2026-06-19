@@ -1479,4 +1479,76 @@ dialog[open]::backdrop {
   line-height: 1.4;
 }
 
+/* Share Dialog Buttons */
+.share-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.btn-share-social {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  color: white !important;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-share-social.twitter {
+  background: #1DA1F2;
+}
+.btn-share-social.twitter:hover {
+  background: #1a90da;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(29, 161, 242, 0.25);
+}
+
+.btn-share-social.facebook {
+  background: #1877F2;
+}
+.btn-share-social.facebook:hover {
+  background: #166fe5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.25);
+}
+
+.btn-share-social.sms {
+  background: #34C759;
+}
+.btn-share-social.sms:hover {
+  background: #2eaf4e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.25);
+}
+
+.btn-share-social.email {
+  background: #4B5563;
+}
+.btn-share-social.email:hover {
+  background: #374151;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(75, 85, 99, 0.25);
+}
+
+#btn-modal-copy-link {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  transition: all 0.25s ease;
+}
+#btn-modal-copy-link:hover {
+  transform: translateY(-2px);
+}
+
 

@@ -1316,7 +1316,20 @@ function setupEventListeners() {
   const copyBtnText = document.getElementById('copy-btn-text');
 
   if (btnHeaderShare) {
-    btnHeaderShare.addEventListener('click', () => shareDialog.showModal());
+    btnHeaderShare.addEventListener('click', () => {
+      if (navigator.share) {
+        navigator.share({
+          title: 'SMS Short Codes',
+          text: 'Clean up your text messages inbox! Banish cryptic numbers and gray bubbles with custom brand logos.',
+          url: 'https://shortcodeicons.com'
+        }).catch(err => {
+          // Fallback to dialog if sharing fails or is cancelled
+          shareDialog.showModal();
+        });
+      } else {
+        shareDialog.showModal();
+      }
+    });
   }
   btnCloseShare.addEventListener('click', () => shareDialog.close());
   shareDialog.addEventListener('click', (e) => {
