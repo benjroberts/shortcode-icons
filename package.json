@@ -1,0 +1,9 @@
+{
+  "name": "shortcode-icons-seeder",
+  "version": "1.0.0",
+  "description": "Seeding script package",
+  "main": "index.html",
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  }
+}
