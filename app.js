@@ -392,9 +392,45 @@ function setupEventListeners() {
 
   submitForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    alert("Thank you for your suggestion! We review brand requests and update the contacts package periodically.");
-    submitForm.reset();
-    submitDialog.close();
+    
+    // Gather form data and convert to JSON for Web3Forms API
+    const formData = new FormData(submitForm);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    // Disable submit button and show loading state
+    const submitBtn = submitForm.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: json
+    })
+    .then(async (response) => {
+      const res = await response.json();
+      if (response.status === 200) {
+        alert("Thank you! Your suggestion was sent successfully. We'll add the logo in our next release.");
+      } else {
+        alert("Oops! Submission failed: " + (res.message || "Please try again later."));
+      }
+    })
+    .catch(error => {
+      console.error("Web3Forms Submission Error:", error);
+      alert("Network error. Please check your internet connection and try again.");
+    })
+    .finally(() => {
+      // Re-enable button, clear inputs, and close dialog
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+      submitForm.reset();
+      submitDialog.close();
+    });
   });
 
   // Share Modal

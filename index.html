@@ -255,18 +255,22 @@
       <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
         Is your favorite shortcode missing? Suggest a brand, and we'll add it and generate its logo in the next release.
       </p>
-      <form id="submit-shortcode-form" style="display: flex; flex-direction: column; gap: 1rem;">
+      <form id="submit-shortcode-form" action="https://api.web3forms.com/submit" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Web3Forms Access Key and Subject Configuration -->
+        <input type="hidden" name="access_key" value="0df67c23-57e4-41ed-aa11-73a770363c3e">
+        <input type="hidden" name="subject" value="New Shortcode Suggestion - shortcodeicons.com">
+        
         <div style="display: flex; flex-direction: column; gap: 0.4rem;">
           <label style="font-size: 0.85rem; font-weight: 500;">Brand Name</label>
-          <input type="text" required class="search-input" style="padding: 0.6rem 0.8rem;" placeholder="e.g. Delta Air Lines">
+          <input type="text" name="brand_name" required class="search-input" style="padding: 0.6rem 0.8rem;" placeholder="e.g. Delta Air Lines">
         </div>
         <div style="display: flex; flex-direction: column; gap: 0.4rem;">
           <label style="font-size: 0.85rem; font-weight: 500;">Shortcode Number</label>
-          <input type="text" required class="search-input" style="padding: 0.6rem 0.8rem;" placeholder="e.g. 33582">
+          <input type="text" name="shortcode" required class="search-input" style="padding: 0.6rem 0.8rem;" placeholder="e.g. 33582">
         </div>
         <div style="display: flex; flex-direction: column; gap: 0.4rem;">
           <label style="font-size: 0.85rem; font-weight: 500;">Typical SMS Content (optional)</label>
-          <textarea class="search-input" style="padding: 0.6rem 0.8rem; font-family: inherit; resize: vertical; min-height: 80px;" placeholder="e.g. Delta Flight 123 is delayed..."></textarea>
+          <textarea name="sample_sms" class="search-input" style="padding: 0.6rem 0.8rem; font-family: inherit; resize: vertical; min-height: 80px;" placeholder="e.g. Delta Flight 123 is delayed..."></textarea>
         </div>
         <button type="submit" class="btn-primary" style="padding: 0.7rem; width: 100%;">Submit Suggestion</button>
       </form>
