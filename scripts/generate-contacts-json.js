@@ -36,6 +36,7 @@ server.listen(8086, async () => {
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
+    await page.setCacheEnabled(false);
     
     // Navigate to local server
     await page.goto('http://localhost:8086/');
