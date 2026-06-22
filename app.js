@@ -1549,6 +1549,15 @@ function setupEventListeners() {
     btnModalSystemShare.style.display = 'none';
   }
 
+  // Hide Facebook share button on mobile devices since the Facebook app intercepts sharer.php and fails to open the composer, and we already have navigator.share
+  const btnFacebookShare = shareDialog ? shareDialog.querySelector('.btn-share-social.facebook') : null;
+  if (btnFacebookShare) {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      btnFacebookShare.style.display = 'none';
+    }
+  }
+
   btnCloseShare.addEventListener('click', () => shareDialog.close());
   shareDialog.addEventListener('click', (e) => {
     const rect = shareDialog.getBoundingClientRect();

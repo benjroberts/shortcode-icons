@@ -1109,7 +1109,8 @@ footer {
   flex-wrap: wrap;
 }
 
-.footer-btn {
+.footer-btn,
+.footer-link {
   background: transparent;
   border: none;
   color: var(--text-muted);
@@ -1118,10 +1119,12 @@ footer {
   font-size: 0.88rem;
   font-weight: 500;
   padding: 0;
+  text-decoration: none;
   transition: var(--transition-smooth);
 }
 
-.footer-btn:hover {
+.footer-btn:hover,
+.footer-link:hover {
   color: var(--primary);
   text-decoration: underline;
 }
