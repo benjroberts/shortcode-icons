@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Logo Avatars Preview</title>
+  <style>
+    body {
+      background-color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #1f2937;
+      margin-bottom: 30px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 180px);
+      gap: 30px;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      background: #e5e7eb;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .label {
+      font-weight: 600;
+      color: #4b5563;
+      text-transform: capitalize;
+    }
+  </style>
+</head>
+<body>
+  <h1>Logo Avatars Preview</h1>
+  <div class="grid">
+    <div class="card">
+      <div class="avatar-circle"><canvas id="canvas-americanexpress" width="200" height="200"></canvas></div>
+      <div class="label">American Express</div>
+    </div>
+    <div class="card">
+      <div class="avatar-circle"><canvas id="canvas-ebay" width="200" height="200"></canvas></div>
+      <div class="label">eBay</div>
+    </div>
+    <div class="card">
+      <div class="avatar-circle"><canvas id="canvas-budget" width="200" height="200"></canvas></div>
+      <div class="label">Budget</div>
+    </div>
+    <div class="card">
+      <div class="avatar-circle"><canvas id="canvas-max" width="200" height="200"></canvas></div>
+      <div class="label">Max</div>
+    </div>
+    <div class="card">
+      <div class="avatar-circle"><canvas id="canvas-okta" width="200" height="200"></canvas></div>
+      <div class="label">Okta</div>
+    </div>
+    <div class="card">
+      <div class="avatar-circle"><canvas id="canvas-slack" width="200" height="200"></canvas></div>
+      <div class="label">Slack</div>
+    </div>
+    <div class="card">
+      <div class="avatar-circle"><canvas id="canvas-southwest" width="200" height="200"></canvas></div>
+      <div class="label">Southwest</div>
+    </div>
+    <div class="card">
+      <div class="avatar-circle"><canvas id="canvas-lowes" width="200" height="200"></canvas></div>
+      <div class="label">Lowe's</div>
+    </div>
+    <div class="card">
+      <div class="avatar-circle"><canvas id="canvas-lululemon" width="200" height="200"></canvas></div>
+      <div class="label">Lululemon</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { BrandLogos, LogosLoaded } from '../logos.js';
+
+    window.onload = async () => {
+      try {
+        await LogosLoaded;
+        const draw = (id, key) => {
+          const canvas = document.getElementById(id);
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            BrandLogos[key](ctx, canvas.width);
+          }
+        };
+        draw('canvas-americanexpress', 'americanexpress');
+        draw('canvas-ebay', 'ebay');
+        draw('canvas-budget', 'budget');
+        draw('canvas-max', 'max');
+        draw('canvas-okta', 'okta');
+        draw('canvas-slack', 'slack');
+        draw('canvas-southwest', 'southwest');
+        draw('canvas-lowes', 'lowes');
+        draw('canvas-lululemon', 'lululemon');
+        
+        window.PreviewReady = true;
+      } catch (err) {
+        console.error(err);
+      }
+    };
+  </script>
+</body>
+</html>
