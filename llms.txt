@@ -1,0 +1,6 @@
+# Shortcode Icons
+
+A library and interactive catalog of over 200+ beautifully styled, pixel-perfect, native macOS/iOS application icons, folders, and utility glyphs formatted specifically for Apple Shortcode launchers and widget customization.
+
+## Features
+- [Shortcode Icons Catalog](https://shortcodeicons.com/): Browse, preview, filter, search, and download custom macOS app icons and themed folders.
