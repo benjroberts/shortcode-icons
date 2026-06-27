@@ -1089,6 +1089,105 @@ body.select-mode .card-select-wrapper {
   transition: var(--transition-smooth);
 }
 
+/* Newsletter Section */
+.newsletter-section {
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-card);
+  padding: 4rem 1.5rem;
+  text-align: center;
+  margin-top: 6rem;
+  border-radius: var(--radius-lg);
+}
+
+.newsletter-container {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.newsletter-container h3 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.newsletter-container p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.55;
+}
+
+.newsletter-form {
+  display: flex;
+  justify-content: center;
+}
+
+.newsletter-input-group {
+  display: flex;
+  width: 100%;
+  max-width: 440px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+  padding: 5px;
+  transition: border-color 0.25s;
+}
+
+.newsletter-input-group:focus-within {
+  border-color: var(--primary);
+}
+
+.newsletter-input-group input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0.65rem 1.2rem;
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  outline: none;
+}
+
+.newsletter-input-group input::placeholder {
+  color: var(--text-muted);
+}
+
+.newsletter-input-group button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 0 1.6rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.newsletter-input-group button:hover {
+  opacity: 0.9;
+}
+
+.newsletter-input-group button:disabled {
+  background: var(--border-color);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.newsletter-message {
+  margin-top: 1rem;
+  font-size: 0.88rem;
+  min-height: 1.25rem;
+}
+
+.newsletter-message.success {
+  color: var(--primary);
+}
+
+.newsletter-message.error {
+  color: #ff5c5c;
+}
+
 /* Footer styling */
 footer {
   margin-top: 7rem;
